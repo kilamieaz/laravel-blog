@@ -3,17 +3,16 @@
 namespace App;
 
 use App\Traits\UsesUuid;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
     use UsesUuid;
-
-    protected $guarded = [];
+    protected $fillable = ['user_id', 'slug', 'title', 'body', 'published', 'image'];
+    // protected $guarded = [];
 
     public function path()
     {
-        return url("/posts/{$this->id}-" . Str::slug($this->title));
+        return url("/posts/{$this->id}/" . slug($this->title));
     }
 }
