@@ -15,4 +15,9 @@ class Post extends Model
     {
         return url("/posts/{$this->id}/" . slug($this->title));
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

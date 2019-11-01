@@ -15,4 +15,11 @@ class PostTest extends TestCase
         $post = factory('App\Post')->create();
         $this->assertEquals(url("/posts/$post->id/$post->slug"), $post->path());
     }
+
+    /** @test */
+    public function it_belongs_to_an_user()
+    {
+        $post = factory('App\Post')->create();
+        $this->assertInstanceOf('App\User', $post->user);
+    }
 }
