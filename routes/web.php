@@ -21,5 +21,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('posts', 'PostsController')->except(['show']);
-    Route::get('posts/{post}-{slug}', 'PostsController@show')->name('posts.show');
+    Route::get('posts/{post}/{slug}', 'PostsController@show')->name('posts.show');
 });
