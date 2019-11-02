@@ -14,6 +14,8 @@ class PostsController extends Controller
     {
         // set the model
         $this->model = new Repository($post);
+        // authorize
+        $this->authorizeResource(Post::class, 'post');
     }
 
     /**
