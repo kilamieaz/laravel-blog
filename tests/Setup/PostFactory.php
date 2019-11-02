@@ -30,23 +30,23 @@ class PostFactory
         $post = factory(Post::class)->create([
             'user_id' => $this->user->id ?? factory(User::class)
         ]);
-        $this->exeComment('create', $post);
+        $this->exeComment($post);
         return $post;
     }
 
     public function raw()
     {
-        $post = factory(Post::class)->raw([
+        $post = factory(Post::class)->create([
             'user_id' => $this->user->id ?? factory(User::class)
         ]);
-        $this->exeComment('raw', $post);
-        return $post;
+        $this->exeComment($post);
+        return $post->toArray();
     }
 
-    public function exeComment($key, $post)
+    public function exeComment($post)
     {
-        factory(Comment::class, $this->commentCount)->$key([
-            'user_id' => $post->user->id,
+        factory(Comment::class, $this->commentCount)->create([
+            'user_id' => $this->user->id ?? factory(User::class),
             'post_id' => $post->id
         ]);
     }
