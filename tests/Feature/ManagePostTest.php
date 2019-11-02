@@ -89,4 +89,14 @@ class ManagePostTest extends TestCase
         // ->assertRedirect(route('posts.index'));
         $this->assertDatabaseMissing('posts', $post->only('id'));
     }
+
+    /** @test */
+    public function an_authenticated_user_cannot_manage_the_projects_of_others()
+    {
+        $this->signIn();
+        $post = PostFactory::create();
+        $this->get($post->path())->assertStatus(403);
+        $this->patch(route('posts.update', $post->id))->assertStatus(403);
+        $this->delete(route('posts.destroy', $post->id))->assertStatus(403);
+    }
 }
