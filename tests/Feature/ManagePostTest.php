@@ -86,12 +86,13 @@ class ManagePostTest extends TestCase
     {
         $post = PostFactory::ownedBy($this->signIn())->create();
         $this->delete(route('posts.destroy', $post->id));
+        $post->refresh();
         // ->assertRedirect(route('posts.index'));
-        $this->assertDatabaseMissing('posts', $post->only('id'));
+        $this->assertDatabaseHas('posts', $post->only('deleted_at'));
     }
 
     /** @test */
-    public function an_authenticated_user_cannot_manage_the_projects_of_others()
+    public function an_authenticated_user_cannot_manage_the_posts_of_others()
     {
         $this->signIn();
         $post = PostFactory::create();

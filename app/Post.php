@@ -4,10 +4,11 @@ namespace App;
 
 use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {
-    use UsesUuid;
+    use UsesUuid, SoftDeletes;
     protected $fillable = ['user_id', 'slug', 'title', 'body', 'published', 'image'];
     // protected $guarded = [];
 
