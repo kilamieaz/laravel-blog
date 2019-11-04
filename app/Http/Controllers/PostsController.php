@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Post;
-use App\Repositories\Eloquent\Repository;
 use Illuminate\Http\Request;
+use App\Blog\Repositories\Eloquent\Repository;
 
 class PostsController extends Controller
 {

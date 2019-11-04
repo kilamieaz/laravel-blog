@@ -4,9 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use Illuminate\Http\Request;
+use App\Blog\Repositories\Eloquent\Repository;
 
 class CategoriesController extends Controller
 {
+    protected $model;
+
+    public function __construct(Category $category)
+    {
+        // set the model
+        $this->model = new Repository($category);
+    }
+
     /**
      * Display a listing of the resource.
      *
