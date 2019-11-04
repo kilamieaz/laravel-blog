@@ -3,10 +3,11 @@
 namespace Tests\Feature;
 
 use App\Post;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Facades\Tests\Setup\PostFactory;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use App\Blog\Repositories\Factory\PostFactory;
+use Facades\App\Blog\Reporting\FactoryReporter;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ManagePostTest extends TestCase
 {
@@ -15,7 +16,7 @@ class ManagePostTest extends TestCase
     /** @test */
     public function guest_cannot_manage_posts()
     {
-        $post = PostFactory::create();
+        $post = FactoryReporter::create(new PostFactory());
         //index
         $this->get(route('posts.index'))->assertRedirect('login');
         //create
@@ -36,10 +37,10 @@ class ManagePostTest extends TestCase
     public function a_user_can_see_all_posts()
     {
         // given we're signed in
-        $post = PostFactory::ownedBy($this->signIn())->create();
+        $post = FactoryReporter::create(new PostFactory($this->signIn()));
         // when i visit All Post
         // i should see that post
-        $this->get('/posts')
+        $this->get(route('posts.index'))
         ->assertSee($post->title)
         ->assertSee($post->body);
     }
@@ -48,9 +49,9 @@ class ManagePostTest extends TestCase
     public function a_user_can_create_a_post()
     {
         $this->signIn();
-        $this->get(route('posts.create'))->assertStatus(200);
+        $this->get(route('posts.create'))->assertOk();
 
-        $attributes = PostFactory::ownedBy($this->signIn())->raw();
+        $attributes = FactoryReporter::raw(new PostFactory($this->signIn()));
         $response = $this->post('/posts', $attributes);
         $post = Post::where($attributes)->first();
         // $response->assertRedirect($post->path());
@@ -63,7 +64,8 @@ class ManagePostTest extends TestCase
     public function a_user_can_view_their_post()
     {
         $this->withoutExceptionHandling();
-        $post = PostFactory::ownedBy($this->signIn())->create();
+        $post = FactoryReporter::create(new PostFactory($this->signIn()));
+
         $this->get($post->path())
         ->assertSee($post->title)
         ->assertSee($post->body)
@@ -74,7 +76,7 @@ class ManagePostTest extends TestCase
     public function a_user_can_update_a_post()
     {
         $attributes = ['title' => 'changed', 'body' => 'changed'];
-        $post = PostFactory::ownedBy($this->signIn())->create();
+        $post = FactoryReporter::create(new PostFactory($this->signIn()));
         $this->get(route('posts.edit', $post->id))->assertOk();
         $this->patch(route('posts.update', $post->id), $attributes);
         // ->assertRedirect($post->path());
@@ -84,10 +86,11 @@ class ManagePostTest extends TestCase
     /** @test */
     public function a_user_can_delete_a_post()
     {
-        $post = PostFactory::ownedBy($this->signIn())->create();
+        $post = FactoryReporter::create(new PostFactory($this->signIn()));
+
         $this->delete(route('posts.destroy', $post->id));
-        $post->refresh();
         // ->assertRedirect(route('posts.index'));
+        $post->refresh();
         $this->assertDatabaseHas('posts', $post->only('deleted_at'));
     }
 
@@ -95,7 +98,8 @@ class ManagePostTest extends TestCase
     public function an_authenticated_user_cannot_manage_the_posts_of_others()
     {
         $this->signIn();
-        $post = PostFactory::create();
+        $post = FactoryReporter::create(new PostFactory());
+
         $this->get($post->path())->assertStatus(403);
         $this->patch(route('posts.update', $post->id))->assertStatus(403);
         $this->delete(route('posts.destroy', $post->id))->assertStatus(403);
