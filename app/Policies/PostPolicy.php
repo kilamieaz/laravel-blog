@@ -18,7 +18,7 @@ class PostPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->id > 0;
+        return true;
     }
 
     /**
@@ -41,7 +41,7 @@ class PostPolicy
      */
     public function create(User $user)
     {
-        return $user->id > 0;
+        return true;
     }
 
     /**

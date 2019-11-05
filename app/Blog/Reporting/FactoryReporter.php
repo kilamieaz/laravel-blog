@@ -6,13 +6,8 @@ use App\Blog\Repositories\Contract\FactoryInterface;
 
 class FactoryReporter
 {
-    public function create(FactoryInterface $factory)
+    public function build(FactoryInterface $factory, $build)
     {
-        return $factory->create();
-    }
-
-    public function raw(FactoryInterface $factory)
-    {
-        return $factory->raw();
+        return $factory->$build();
     }
 }
