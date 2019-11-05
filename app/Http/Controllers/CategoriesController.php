@@ -12,8 +12,8 @@ class CategoriesController extends Controller
 
     public function __construct(Category $category)
     {
-        // set the model
         $this->model = new Repository($category);
+        $this->authorizeResource(Category::class, 'category');
     }
 
     /**
