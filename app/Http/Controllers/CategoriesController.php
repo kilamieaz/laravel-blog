@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Blog\Repositories\Eloquent\CategoryRepository;
 use App\Category;
 use Illuminate\Http\Request;
-use App\Blog\Repositories\Eloquent\Repository;
 
 class CategoriesController extends Controller
 {
-    protected $model;
+    protected $repo;
 
-    public function __construct(Category $category)
+    public function __construct()
     {
-        $this->model = new Repository($category);
+        $this->repo = new CategoryRepository();
         $this->authorizeResource(Category::class, 'category');
     }
 
@@ -23,7 +23,7 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        return $this->model->all();
+        return $this->repo->all();
     }
 
     /**
@@ -50,7 +50,7 @@ class CategoriesController extends Controller
         ]);
         $request->merge(['slug' => slug($request->title)]);
         // create record and pass in only fields that are fillable
-        return $this->model->store($request->only($this->model->getModel()->fillable));
+        return $this->repo->store($request->only($this->repo->getModel()->fillable));
     }
 
     /**
@@ -61,7 +61,7 @@ class CategoriesController extends Controller
      */
     public function show(Category $category)
     {
-        return $this->model->show($category);
+        return $this->repo->show($category);
     }
 
     /**
@@ -84,8 +84,8 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        // update model and only pass in the fillable fields
-        $this->model->update($request->only($this->model->getModel()->fillable), $category);
+        // update repo and only pass in the fillable fields
+        $this->repo->update($request->only($this->repo->getModel()->fillable), $category);
 
         return $category->refresh();
     }
@@ -98,6 +98,6 @@ class CategoriesController extends Controller
      */
     public function destroy(Category $category)
     {
-        return $this->model->delete($category);
+        return $this->repo->delete($category);
     }
 }

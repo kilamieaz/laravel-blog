@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Blog\Repositories\Eloquent\PostRepository;
 use App\Post;
 use Illuminate\Http\Request;
-use App\Blog\Repositories\Eloquent\Repository;
 
 class PostsController extends Controller
 {
-    protected $model;
+    protected $repo;
 
-    public function __construct(Post $post)
+    public function __construct()
     {
-        // set the model
-        $this->model = new Repository($post);
+        // set the repo
+        $this->repo = new PostRepository();
+        // $this->repo = RepositoryReporter::report(new PostRepository);
         // authorize
         $this->authorizeResource(Post::class, 'post');
     }
@@ -25,7 +26,7 @@ class PostsController extends Controller
      */
     public function index()
     {
-        return $this->model->all();
+        return $this->repo->latest();
     }
 
     /**
@@ -52,7 +53,7 @@ class PostsController extends Controller
         ]);
         $request->merge(['slug' => slug($request->title)]);
         // create record and pass in only fields that are fillable
-        return $this->model->store($request->only($this->model->getModel()->fillable));
+        return $this->repo->store($request->only($this->repo->getModel()->fillable));
     }
 
     /**
@@ -63,7 +64,7 @@ class PostsController extends Controller
      */
     public function show(Post $post)
     {
-        return $this->model->show($post);
+        return $this->repo->show($post);
     }
 
     /**
@@ -86,8 +87,8 @@ class PostsController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        // update model and only pass in the fillable fields
-        $this->model->update($request->only($this->model->getModel()->fillable), $post);
+        // update repo and only pass in the fillable fields
+        $this->repo->update($request->only($this->repo->getModel()->fillable), $post);
 
         return $post->refresh();
     }
@@ -100,6 +101,6 @@ class PostsController extends Controller
      */
     public function destroy(Post $post)
     {
-        return $this->model->delete($post);
+        return $this->repo->delete($post);
     }
 }
