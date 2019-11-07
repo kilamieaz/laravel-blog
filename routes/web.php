@@ -24,4 +24,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('posts/{post}/{slug}', 'PostsController@show')->name('posts.show');
     Route::resource('categories', 'CategoriesController')->except(['show']);
     Route::get('categories/{category}/{slug}', 'CategoriesController@show')->name('categories.show');
+    Route::resource('comments', 'CommentsController');
 });

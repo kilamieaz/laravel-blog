@@ -22,6 +22,7 @@ class CreateCommentsTable extends Migration
             $table->string('guest_email')->nullable();
             $table->text('body');
             $table->boolean('approved')->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
